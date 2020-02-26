@@ -38,6 +38,7 @@ public class AccountClass implements AccountDAO {
 	public List<Account> getAccountByLicenseNumber(String licenseNumber) throws FileNotFoundException, ParseException {
 		Scanner sc = new Scanner("AccountInfo.txt");
 		List<Account> accountList = new ArrayList<Account>();
+		System.out.println("sfje");
 		return null;
 	}
 
