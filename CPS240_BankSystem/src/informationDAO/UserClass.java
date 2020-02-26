@@ -12,7 +12,7 @@ import user.User;
 public class UserClass implements UserDAO {
 
 	@Override
-	public User makeUser(String licenseNumber) throws FileNotFoundException, ParseException {
+	public User createUser(String licenseNumber) throws FileNotFoundException, ParseException {
 		Scanner sc = new Scanner(new File("userInfo.txt"));
 		User user = null;
 		while(user == null || sc.hasNextLine()){
@@ -34,7 +34,7 @@ public class UserClass implements UserDAO {
 	}
 
 	@Override
-	public boolean removeUser() throws FileNotFoundException {
+	public boolean deleteUser() throws FileNotFoundException {
 		// TODO Auto-generated method stub
 		return false;
 	}
