@@ -34,7 +34,9 @@ public class UserFunctions {
 	}
 	
 	public boolean deleteUser(String licenseNumber) throws IOException, ParseException{
-		
+		if(accountdao.getAccountByLicenseNumber(licenseNumber).size() != 0) {
+			throw new IllegalStateException("All accounts should be deleted before delete user");
+		}
 		return false;		
 	}
 }

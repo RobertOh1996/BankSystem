@@ -1,17 +1,11 @@
 package user;
 
-import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import informationDAO.AccountClass;
-import informationDAO.UserClass;
-
 public class User {
-	private UserClass userdao;
-	private AccountClass accountdao;
 	
 	private String licenseNumber;
 	private String firstName;

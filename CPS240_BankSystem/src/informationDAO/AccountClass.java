@@ -23,23 +23,29 @@ public class AccountClass implements AccountDAO {
 	@Override
 	public Account getAccountByAccountNumber(String accountNumber) throws FileNotFoundException, ParseException {
 		Scanner sc = new Scanner(new File("AccountInfo.txt"));
-		Account account = null;
-		while(account == null || sc.hasNextLine()) {
+		Account accountList = null;
+		while(accountList == null || sc.hasNextLine()) {
 			String[] accountLine = sc.nextLine().split(",");
 			if(accountNumber.equals(accountLine[0])) {
-				account = new Account(accountLine, this.userdao);
+				accountList = new Account(accountLine, this.userdao);
 			}
 		}
 		sc.close();
-		return account;
+		return accountList;
 	}	
 
 	@Override
 	public List<Account> getAccountByLicenseNumber(String licenseNumber) throws FileNotFoundException, ParseException {
 		Scanner sc = new Scanner("AccountInfo.txt");
 		List<Account> accountList = new ArrayList<Account>();
-		System.out.println("sfje");
-		return null;
+		while(sc.hasNextLine()) {
+			String[] accountLine = sc.nextLine().split(",");
+			if(licenseNumber.equals(accountLine[1])) {
+				accountList.add(new Account(accountLine, this.userdao));
+			}
+		}
+		sc.close();
+		return accountList;
 	}
 
 	@Override
