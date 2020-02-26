@@ -1,7 +1,9 @@
 package account;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 
+import informationDAO.AccountDAO;
 import informationDAO.UserDAO;
 
 public class Account {
@@ -13,13 +15,22 @@ public class Account {
 	
 	private boolean canOverDraft;
 	
-	public Account(String[] accountLine, UserDAO userdao) {
-		this.accountId = accountLine[0];
-		this.licenseNumber = accountLine[1];
-		this.accountBalance = new BigDecimal(accountLine[2]);
-		this.type = AccountType.valueOf(accountLine[3]);
-		this.status = AccountStatus.valueOf(accountLine[4]);
-		this.canOverDraft = Boolean.valueOf(accountLine[5]);
+	public Account(String[] accountData, UserDAO userdao) {
+		this.accountId = accountData[0];
+		this.licenseNumber = accountData[1];
+		this.accountBalance = new BigDecimal(accountData[2]);
+		this.type = AccountType.valueOf(accountData[3]);
+		this.status = AccountStatus.valueOf(accountData[4]);
+		this.canOverDraft = Boolean.valueOf(accountData[5]);
+	}
+
+	public Account(String licenseNumber, AccountType type, boolean canOverDraft) throws FileNotFoundException {
+		this.accountId = AccountDAO.createNextId();
+		this.licenseNumber = licenseNumber;
+		this.accountBalance = BigDecimal.ZERO;
+		this.type = type;
+		this.status = AccountStatus.ACTIVE;
+		this.canOverDraft = canOverDraft;
 	}
 
 	@Override

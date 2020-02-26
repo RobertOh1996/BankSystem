@@ -1,8 +1,13 @@
 package informationDAO;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.Scanner;
@@ -34,9 +39,21 @@ public class UserClass implements UserDAO {
 	}
 
 	@Override
-	public boolean deleteUser() throws FileNotFoundException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deleteUser(String licenseNumber) throws IOException {
+		File userList = new File("userInfo.txt");
+		File deleteUser = new File("forDeleteUser.txt");
+		BufferedReader rd = new BufferedReader(new FileReader(userList));
+		BufferedWriter rw = new BufferedWriter(new FileWriter(deleteUser));
+		String Line;
+		while((Line = rd.readLine()) != null){
+			String seperated = Line.split(",")[0];
+			if(seperated.equals(licenseNumber)) continue;
+			rw.write(Line + System.getProperty("line.seperator"));			
+		}
+		rd.close();
+		rw.close();
+		userList.delete();
+		return deleteUser.renameTo(userList);
 	}
 
 }

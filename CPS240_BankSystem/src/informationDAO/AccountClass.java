@@ -59,9 +59,9 @@ public class AccountClass implements AccountDAO {
 	@Override
 	public boolean deleteAccount(String accountId) throws IOException {
 		File accountList = new File("AccountInfo.txt");
-		File deleteFile = new File("forDelete.txt");
-		BufferedReader rd = new BufferedReader(new FileReader("AccountInfo.txt"));
-		BufferedWriter rw = new BufferedWriter(new FileWriter("forDelete.txt"));
+		File deleteAccount = new File("forDeleteAccount.txt");
+		BufferedReader rd = new BufferedReader(new FileReader(accountList));
+		BufferedWriter rw = new BufferedWriter(new FileWriter(deleteAccount));
 		String Line;
 		while((Line = rd.readLine()) != null) {
 			String id = Line.split(",")[0];
@@ -71,15 +71,15 @@ public class AccountClass implements AccountDAO {
 		rw.close();
 		rd.close();
 		accountList.delete();
-		return deleteFile.renameTo(accountList);
+		return deleteAccount.renameTo(accountList);
 	}
 
 	@Override
 	public boolean updateAccount(Account account) throws IOException {
 		File accountList = new File("AccountInfo.txt");
-		File updateFile = new File("forUpdate.txt");
-		BufferedReader rd = new BufferedReader(new FileReader("AccountInfo.txt"));
-		BufferedWriter rw = new BufferedWriter(new FileWriter("forUpdate.txt"));
+		File updateAccount = new File("forUpdateAccount.txt");
+		BufferedReader rd = new BufferedReader(new FileReader(accountList));
+		BufferedWriter rw = new BufferedWriter(new FileWriter(updateAccount));
 		String Line;
 		while((Line = rd.readLine()) != null) {
 			String accountId = Line.split(",")[0];
@@ -92,7 +92,7 @@ public class AccountClass implements AccountDAO {
 		rd.close();
 		rw.close();
 		accountList.delete();
-		return updateFile.renameTo(accountList);
+		return updateAccount.renameTo(accountList);
 	}
 
 }

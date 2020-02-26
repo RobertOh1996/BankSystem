@@ -2,6 +2,7 @@ package user;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -31,16 +32,16 @@ public class User {
 		this.zip = zip;
 	}
 
-	public User(String[] userFromFile) throws ParseException {
-		this.licenseNumber = userFromFile[0];
-		this.firstName = userFromFile[1];
-		this.mName = userFromFile[2];
-		this.lastName = userFromFile[3];
-		this.occupation = userFromFile[4];
-		this.birthday = LocalDate.parse(userFromFile[5], date);
-		this.street = userFromFile[6];
-		this.addressNum = userFromFile[7];
-		this.zip = userFromFile[8];
+	public User(String[] userData) throws ParseException {
+		this.licenseNumber = userData[0];
+		this.firstName = userData[1];
+		this.mName = userData[2];
+		this.lastName = userData[3];
+		this.occupation = userData[4];
+		this.birthday = LocalDate.parse(userData[5], date);
+		this.street = userData[6];
+		this.addressNum = userData[7];
+		this.zip = userData[8];
 	}
 
 	@Override
@@ -119,6 +120,11 @@ public class User {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+	
+
+	public int getAge() {
+		return Period.between(birthday, LocalDate.now()).getYears();
 	}
 	
 }
