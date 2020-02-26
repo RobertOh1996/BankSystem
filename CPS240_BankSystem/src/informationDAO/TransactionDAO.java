@@ -12,7 +12,7 @@ public interface TransactionDAO {
 	
 	public Transaction getTransaction(String accountId, String transactionId) throws FileNotFoundException;
 
-	public List<Transaction> getTransactionByTime(String accountId, LocalDate StartDate, LocalDate endDate);
+	public List<Transaction> getTransactionByTime(String accountId, LocalDate StartDate, LocalDate endDate) throws FileNotFoundException;
 	
 	public boolean writeTransaction(Transaction transaction) throws FileNotFoundException;
 	
