@@ -13,6 +13,8 @@ public interface AccountDAO {
 	
 	public List<Account> getAccountByLicenseNumber(String licenseNumber) throws FileNotFoundException, ParseException;
 	
+	public List<Account> getAccountAll() throws FileNotFoundException, ParseException;
+	
 	public boolean addAccount(Account account) throws FileNotFoundException;
 	
 	public boolean deleteAccount(String accountId) throws IOException;

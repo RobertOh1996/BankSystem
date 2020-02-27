@@ -47,6 +47,19 @@ public class AccountClass implements AccountDAO {
 		sc.close();
 		return accountList;
 	}
+	
+
+	@Override
+	public List<Account> getAccountAll() throws FileNotFoundException, ParseException {
+		Scanner sc = new Scanner("AccountInfo.txt");
+		List<Account> accountList = new ArrayList<Account>();
+		while(sc.hasNextLine()) {
+			String[] accountLine = sc.nextLine().split(",");
+			accountList.add(new Account(accountLine, this.userdao));
+		}
+		sc.close();
+		return accountList;
+	}
 
 	@Override
 	public boolean addAccount(Account account) throws FileNotFoundException {
@@ -94,5 +107,6 @@ public class AccountClass implements AccountDAO {
 		accountList.delete();
 		return updateAccount.renameTo(accountList);
 	}
+
 
 }

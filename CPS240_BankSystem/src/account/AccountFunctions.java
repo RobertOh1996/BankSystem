@@ -4,16 +4,29 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
-
+import java.time.LocalDate;
 import informationDAO.AccountDAO;
 import informationDAO.TransactionDAO;
+import informationDAO.UserDAO;
+import transaction.Transaction;
+import transaction.TransactionType;
 import user.User;
 
 public class AccountFunctions {
+
+	public AccountFunctions() {
 	
+	}
+
+	public AccountFunctions(AccountDAO accountdao, TransactionDAO transactiondao) {
+		this.accountdao = accountdao;
+		this.transactiondao = transactiondao;
+	}
+
+	private static final BigDecimal overDraftFee = new BigDecimal("35.00");
 	private AccountDAO accountdao;
 	private TransactionDAO transactiondao;
-	
+
 	public Account createAccount(AccountType type, User user, boolean canOverDraft) throws FileNotFoundException{
 		Account account = null;
 		if(type.equals(AccountType.STUDENTCHECKING) || type.equals(AccountType.STUDENTSAVING)) {
@@ -40,4 +53,66 @@ public class AccountFunctions {
 		}
 		return this.accountdao.deleteAccount(accountId);	
 	}
+	
+	public boolean depositLog(Account account, String amountTo) throws IOException{
+		Transaction tr = this.deposit(account, amountTo);
+		accountdao.updateAccount(account);
+		transactiondao.writeTransaction(tr);		
+		return true;		
+	}
+	
+	public Transaction deposit(Account account, String amountTo) throws FileNotFoundException{
+		BigDecimal amountToDeposit = new BigDecimal(amountTo);
+		BigDecimal newBalance = account.getAccountBalance().add(amountToDeposit);
+		account.setAccountBalance(newBalance);
+		if(account.getStatus() == AccountStatus.OVERDRAWN && newBalance.compareTo(BigDecimal.ZERO) >= 0) {
+			account.setStatus(AccountStatus.ACTIVE);
+		}
+		return new Transaction(account.getAccountId(), LocalDate.now(), TransactionType.DEPOSIT, amountToDeposit, account.getAccountBalance());		
+	}
+	
+	public boolean withdrawLog(Account account, String amountTo) throws IOException{
+		Transaction tr = this.withdraw(account, amountTo);
+		accountdao.updateAccount(account);
+		transactiondao.writeTransaction(tr);
+		if(account.isCanOverDraft() && account.getAccountBalance().compareTo(BigDecimal.ZERO) < 0) {
+			tr = overDraftFeeService(account);
+			accountdao.updateAccount(account);
+			transactiondao.writeTransaction(tr);
+		}
+		return true;		
+	}
+	
+	public Transaction withdraw(Account account, String amountTo) throws FileNotFoundException {
+		BigDecimal amountToWithDraw = new BigDecimal(amountTo);
+		BigDecimal newBalance = account.getAccountBalance().subtract(amountToWithDraw);
+		if((newBalance.compareTo(BigDecimal.ZERO) < 0 && !account.isCanOverDraft())) {
+			throw new IllegalStateException("This account is not for overdraft.");
+		} else if(account.isCanOverDraft() && newBalance.compareTo(defineOverDraftLimit(account.getType())) <= 0) {
+			throw new IllegalStateException("Overdraft maximum exdeeded.");
+		} else {
+			account.setAccountBalance(newBalance);
+			return new Transaction(account.getAccountId(), LocalDate.now(), TransactionType.WITHDRAW, amountToWithDraw, account.getAccountBalance());
+		}
+	}
+	
+	public Transaction overDraftFeeService(Account account) throws FileNotFoundException{
+		account.setAccountBalance(account.getAccountBalance().subtract(overDraftFee));
+		return new Transaction(account.getAccountId(), LocalDate.now(), TransactionType.TR_FEE, overDraftFee, account.getAccountBalance());
+	}
+	
+	public BigDecimal defineOverDraftLimit(AccountType type) {
+		BigDecimal limit = BigDecimal.ZERO;
+		if(type.equals(AccountType.STUDENTCHECKING)) {
+			limit = new BigDecimal("-500.00");
+		} else if(type.equals(AccountType.PERSONALCHECKING)) {
+			limit = new BigDecimal("-1500.00");
+		} else if(type.equals(AccountType.BUSINESSCHECKING)) {
+			limit = new BigDecimal("-7500.00");
+		} else {
+			throw new IllegalArgumentException("Not Defined this account type");
+		}
+		return limit;
+	}
+	
 }

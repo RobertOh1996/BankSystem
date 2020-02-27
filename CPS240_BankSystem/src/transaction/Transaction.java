@@ -1,9 +1,12 @@
 package transaction;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
+import informationDAO.TransactionDAO;
 
 public class Transaction {
 	
@@ -24,6 +27,15 @@ public class Transaction {
 		this.amountTo = new BigDecimal(transactionData[4]);
 		this.accountBalance = new BigDecimal(transactionData[5]);
 	}
+
+	public Transaction(String accountId, LocalDate date, TransactionType type, BigDecimal amountTo, BigDecimal accountBalance) throws FileNotFoundException {
+		this.transactionId = TransactionDAO.getNextId();
+		this.accountId = accountId;
+		this.date = date;
+		this.type = type;
+		this.amountTo = amountTo;
+		this.accountBalance = accountBalance;
+;	}
 
 	@Override
 	public String toString() {
