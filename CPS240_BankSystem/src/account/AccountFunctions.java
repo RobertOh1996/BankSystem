@@ -54,14 +54,14 @@ public class AccountFunctions {
 		return this.accountdao.deleteAccount(accountId);	
 	}
 	
-	public boolean depositLog(Account account, String amountTo) throws IOException{
-		Transaction tr = this.deposit(account, amountTo);
+	public boolean deposit(Account account, String amountTo) throws IOException{
+		Transaction tr = this.depositLog(account, amountTo);
 		accountdao.updateAccount(account);
 		transactiondao.writeTransaction(tr);		
 		return true;		
 	}
 	
-	public Transaction deposit(Account account, String amountTo) throws FileNotFoundException{
+	public Transaction depositLog(Account account, String amountTo) throws FileNotFoundException{
 		BigDecimal amountToDeposit = new BigDecimal(amountTo);
 		BigDecimal newBalance = account.getAccountBalance().add(amountToDeposit);
 		account.setAccountBalance(newBalance);
@@ -71,8 +71,8 @@ public class AccountFunctions {
 		return new Transaction(account.getAccountId(), LocalDate.now(), TransactionType.DEPOSIT, amountToDeposit, account.getAccountBalance());		
 	}
 	
-	public boolean withdrawLog(Account account, String amountTo) throws IOException{
-		Transaction tr = this.withdraw(account, amountTo);
+	public boolean withdraw(Account account, String amountTo) throws IOException{
+		Transaction tr = this.withdrawLog(account, amountTo);
 		accountdao.updateAccount(account);
 		transactiondao.writeTransaction(tr);
 		if(account.isCanOverDraft() && account.getAccountBalance().compareTo(BigDecimal.ZERO) < 0) {
@@ -83,7 +83,7 @@ public class AccountFunctions {
 		return true;		
 	}
 	
-	public Transaction withdraw(Account account, String amountTo) throws FileNotFoundException {
+	public Transaction withdrawLog(Account account, String amountTo) throws FileNotFoundException {
 		BigDecimal amountToWithDraw = new BigDecimal(amountTo);
 		BigDecimal newBalance = account.getAccountBalance().subtract(amountToWithDraw);
 		if((newBalance.compareTo(BigDecimal.ZERO) < 0 && !account.isCanOverDraft())) {

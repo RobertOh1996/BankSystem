@@ -36,7 +36,7 @@ public class AccountClass implements AccountDAO {
 
 	@Override
 	public List<Account> getAccountByLicenseNumber(String licenseNumber) throws FileNotFoundException, ParseException {
-		Scanner sc = new Scanner("AccountInfo.txt");
+		Scanner sc = new Scanner(new File("AccountInfo.txt"));
 		List<Account> accountList = new ArrayList<Account>();
 		while(sc.hasNextLine()) {
 			String[] accountLine = sc.nextLine().split(",");
@@ -51,7 +51,7 @@ public class AccountClass implements AccountDAO {
 
 	@Override
 	public List<Account> getAccountAll() throws FileNotFoundException, ParseException {
-		Scanner sc = new Scanner("AccountInfo.txt");
+		Scanner sc = new Scanner(new File("AccountInfo.txt"));
 		List<Account> accountList = new ArrayList<Account>();
 		while(sc.hasNextLine()) {
 			String[] accountLine = sc.nextLine().split(",");
