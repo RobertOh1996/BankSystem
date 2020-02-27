@@ -1,8 +1,8 @@
 import user.User;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 import account.Account;
@@ -29,14 +29,15 @@ public class Main {
 		accountdao.addAccount(account);
 		TransactionDAO transactiondao = new TransactionClass();
 		af = new AccountFunctions(accountdao, transactiondao);
-		af.depositLog(account, "200.00");
+		af.deposit(account, "200.00");		
 		System.out.println(account.getAccountBalance());
-		af.withdrawLog(account, "300.00");
+		af.withdraw(account, "300.00");
 		System.out.println(account.getAccountBalance());
-		account = accountdao.getAccountByAccountNumber("0");
-		System.out.println(account.getAccountBalance());
-		Transaction transactionList = transactiondao.getTransaction("0", "0");
-		System.out.println(transactionList);
+		
+		List<Transaction> transactionList = transactiondao.getTransactionByTime("0", LocalDate.now(), LocalDate.now());
+		for(Transaction t: transactionList) {
+			System.out.println(t);
+		}
+	
 	}
-
 }

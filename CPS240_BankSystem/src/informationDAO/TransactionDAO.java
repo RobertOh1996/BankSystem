@@ -17,7 +17,7 @@ public interface TransactionDAO {
 	public boolean writeTransaction(Transaction transaction) throws FileNotFoundException;
 	
 	public static String getNextId() throws FileNotFoundException{
-		Scanner sc = new Scanner(new File("TransactionInfo.txt"));
+		Scanner sc = new Scanner("transactionInfo.txt");
 		int transactionCounter = 0;
 		while(sc.hasNextLine()) {
 			sc.nextLine();

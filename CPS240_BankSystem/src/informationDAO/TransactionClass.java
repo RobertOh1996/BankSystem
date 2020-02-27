@@ -19,7 +19,7 @@ public class TransactionClass implements TransactionDAO {
 
 	@Override
 	public Transaction getTransaction(String accountId, String transactionId) throws FileNotFoundException {
-		Scanner sc = new Scanner(new File("transactionInfo,txt"));
+		Scanner sc = new Scanner(new File("transactionInfo.txt"));
 		Transaction tr = null;
 		while(tr == null || sc.hasNextLine()) {
 			String[] trLine = sc.nextLine().split(",");
