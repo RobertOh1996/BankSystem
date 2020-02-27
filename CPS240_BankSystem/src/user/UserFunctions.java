@@ -37,6 +37,6 @@ public class UserFunctions {
 		if(accountdao.getAccountByLicenseNumber(licenseNumber).size() != 0) {
 			throw new IllegalStateException("All accounts should be deleted before delete user");
 		}
-		return false;		
+		return this.userdao.deleteUser(licenseNumber);		
 	}
 }
