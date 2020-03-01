@@ -7,13 +7,14 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
 import transaction.Transaction;
 
-public class TransactionClass implements TransactionDAO {
+public class TransactionDAOImpl implements TransactionDAO {
 	
 	private static final DateTimeFormatter Date = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
@@ -32,7 +33,7 @@ public class TransactionClass implements TransactionDAO {
 	}
 
 	@Override
-	public List<Transaction> getTransactionByTime(String accountId, LocalDate StartDate, LocalDate endDate) throws FileNotFoundException {
+	public List<Transaction> getTransactionsBetweenRange(String accountId, LocalDate StartDate, LocalDate endDate) throws FileNotFoundException {
 		Scanner sc = new Scanner(new File("transactionInfo.txt"));
 		List<Transaction> transactionList = new ArrayList<Transaction>();
 		while(sc.hasNextLine()) {

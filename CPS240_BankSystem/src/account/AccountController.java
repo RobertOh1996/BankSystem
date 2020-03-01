@@ -12,18 +12,15 @@ import transaction.Transaction;
 import transaction.TransactionType;
 import user.User;
 
-public class AccountFunctions {
+public class AccountController {
 
-	public AccountFunctions() {
-	
-	}
-
-	public AccountFunctions(AccountDAO accountdao, TransactionDAO transactiondao) {
+	public AccountController(AccountDAO accountdao, TransactionDAO transactiondao) {
 		this.accountdao = accountdao;
 		this.transactiondao = transactiondao;
 	}
 
 	private static final BigDecimal overDraftFee = new BigDecimal("35.00");
+	
 	private AccountDAO accountdao;
 	private TransactionDAO transactiondao;
 

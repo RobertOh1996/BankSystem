@@ -7,14 +7,15 @@ import informationDAO.AccountDAO;
 import informationDAO.UserDAO;
 
 public class Account {
+	
 	private String accountId;
 	private String licenseNumber;
 	private BigDecimal accountBalance;
 	private AccountType type;
 	private AccountStatus status;
-	
+
 	private boolean canOverDraft;
-	
+
 	public Account(String[] accountData, UserDAO userdao) {
 		this.accountId = accountData[0];
 		this.licenseNumber = accountData[1];
@@ -35,7 +36,8 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return String.format("%s, %s, %s, %s, %s, %s", this.accountId, this.licenseNumber, this.accountBalance, this.type, this.status, this.canOverDraft);
+		return String.format("%s, %s, %s, %s, %s, %s", this.accountId, this.licenseNumber, this.accountBalance,
+				this.type, this.status, this.canOverDraft);
 	}
 
 	public String getAccountId() {

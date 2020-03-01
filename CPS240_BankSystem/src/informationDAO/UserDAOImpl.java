@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 import user.User;
 
-public class UserClass implements UserDAO {
+public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User createUser(String licenseNumber) throws FileNotFoundException, ParseException {
