@@ -7,7 +7,7 @@ import java.text.ParseException;
 import informationDAO.AccountDAO;
 import informationDAO.UserDAO;
 
-public class UserFunctions {
+public class UserController {
 	
 	UserDAO userdao;
 	AccountDAO accountdao;

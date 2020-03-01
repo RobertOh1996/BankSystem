@@ -3,8 +3,12 @@ package account;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+
 import informationDAO.AccountDAO;
 import informationDAO.TransactionDAO;
 import informationDAO.UserDAO;
@@ -112,4 +116,70 @@ public class AccountController {
 		return limit;
 	}
 	
+	public void monthlyFeeService() throws IOException, ParseException{
+		List<Account> accountList = accountdao.getAccountAll();
+		for(Account ac : accountList) {
+			BigDecimal monthlyFee = this.defineMonthlyFee(ac);
+			ac.setAccountBalance(ac.getAccountBalance().subtract(monthlyFee));
+			accountdao.updateAccount(ac);
+			transactiondao.writeTransaction(new Transaction(ac.getAccountId(), LocalDate.now(), TransactionType.MONTHLY_FEE, monthlyFee, ac.getAccountBalance()));
+		}
+	}
+	
+	public BigDecimal defineMonthlyFee(Account account) throws FileNotFoundException, ParseException{
+		BigDecimal monthlyFee = BigDecimal.ZERO;
+		if(account.getType().equals(AccountType.PERSONALCHECKING)) {
+			monthlyFee = BigDecimal.TEN;
+			LocalDate firstday = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate lastday = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+			List<Transaction> trList = transactiondao.getTransactionsBetweenRange(account.getAccountId(), firstday, lastday);
+			boolean feeExempted = false;
+			boolean balanceIsOver500 = true;
+			for(Transaction tr: trList) {
+				if(tr.getType().equals(TransactionType.DEPOSIT) && tr.getAmountTo().compareTo(new BigDecimal("500.00")) >= 0) {
+					feeExempted = true;
+					break;
+				}
+				else if(tr.getAccountBalance().compareTo(new BigDecimal("500.00")) < 0) {
+					balanceIsOver500 = false;
+					break;
+				}
+			}
+			List<Account> acList = accountdao.getAccountByLicenseNumber(account.getLicenseNumber());
+			BigDecimal avg = BigDecimal.ZERO;
+			BigDecimal sum = BigDecimal.ZERO;
+			for(Account ac: acList) {
+				sum = sum.add(ac.getAccountBalance());
+			}
+			if(avg.compareTo(BigDecimal.ZERO) > 0) {
+				avg = sum.divide(BigDecimal.valueOf(acList.size()), 15, RoundingMode.HALF_UP);
+			}
+			if(avg.compareTo(new BigDecimal("5000.00")) >= 0) {
+				feeExempted = true;
+			}
+			if(feeExempted == true || balanceIsOver500 == true) {
+				monthlyFee = BigDecimal.ZERO;
+			}		
+		}
+		else if(account.getType().equals(AccountType.STUDENTSAVING)){
+			monthlyFee = new BigDecimal("5.00");
+			if(account.getAccountBalance().compareTo(new BigDecimal("250.00")) >= 0) {
+				monthlyFee = BigDecimal.ZERO;
+			}
+		}
+		else if(account.getType().equals(AccountType.PERSOANLSAVING)){
+			monthlyFee = new BigDecimal("25.00");
+			if(account.getAccountBalance().compareTo(new BigDecimal("250.00")) >= 0) {
+				monthlyFee = BigDecimal.ZERO;
+			}
+		}
+		else if(account.getType().equals(AccountType.STUDENTSAVING)){
+			monthlyFee = new BigDecimal("25.00");
+			if(account.getAccountBalance().compareTo(new BigDecimal("2500.00")) >= 0) {
+				monthlyFee = BigDecimal.ZERO;
+			}
+		}
+		else System.out.println("Not defined type");
+		return monthlyFee;	
+	}
 }
