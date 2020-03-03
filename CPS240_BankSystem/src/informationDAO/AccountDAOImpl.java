@@ -16,6 +16,11 @@ import java.util.Scanner;
 
 import account.Account;
 
+/**
+ * This class implemented AccountDAO.
+ * @author Jaemin Oh
+ *
+ */
 public class AccountDAOImpl implements AccountDAO {
 	
 	private UserDAO userdao;	

@@ -14,8 +14,16 @@ import java.util.Scanner;
 
 import transaction.Transaction;
 
+/**
+ * This class implemented transactionDAO.
+ * @author Jaemin Oh
+ *
+ */
 public class TransactionDAOImpl implements TransactionDAO {
 	
+	/**
+	 * It defines valid date format for transaction information
+	 */
 	private static final DateTimeFormatter Date = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
 	@Override

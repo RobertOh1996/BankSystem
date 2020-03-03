@@ -14,6 +14,11 @@ import java.util.Scanner;
 
 import user.User;
 
+/**
+ * This class implemented userDAO.
+ * @author Jaemin Oh
+ *
+ */
 public class UserDAOImpl implements UserDAO {
 
 	@Override

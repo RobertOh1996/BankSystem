@@ -6,6 +6,11 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+/** 
+ * This class contains attributes and constructors for user information.
+ * @author Jaemin Oh
+ * 
+ */
 public class User {
 	
 	private String licenseNumber;
@@ -18,6 +23,9 @@ public class User {
 	private String addressNum;
 	private String zip;
 	
+	/**
+	 * It defines valid date format for user information
+	 */
 	private static final DateTimeFormatter date = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH);
 	
 	public User(String licenseNumber, String firstName, String mName, String lastName, String occupation, String birthday, String street, String addressNum, String zip) {

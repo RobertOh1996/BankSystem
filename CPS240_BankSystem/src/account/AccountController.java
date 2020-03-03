@@ -16,6 +16,11 @@ import transaction.Transaction;
 import transaction.TransactionType;
 import user.User;
 
+/**
+ * This class has several services executed by account contoller.
+ * @author Jaemin Oh
+ *
+ */
 public class AccountController {
 
 	public AccountController(AccountDAO accountdao, TransactionDAO transactiondao) {
@@ -23,11 +28,22 @@ public class AccountController {
 		this.transactiondao = transactiondao;
 	}
 
+	/**
+	 * It defines valid overdraft fee for account information
+	 */
 	private static final BigDecimal overDraftFee = new BigDecimal("35.00");
 	
 	private AccountDAO accountdao;
 	private TransactionDAO transactiondao;
 
+	/**
+	 * Create account with given information.
+	 * @param type: A valid account type.
+	 * @param user: A valid user object.
+	 * @param canOverDraft: Represents whether this user can overdraft or not.
+	 * @return: An newly created account.
+	 * @throws FileNotFoundException: Thrown if connection to account database is not successful.
+	 */
 	public Account createAccount(AccountType type, User user, boolean canOverDraft) throws FileNotFoundException{
 		Account account = null;
 		if(type.equals(AccountType.STUDENTCHECKING) || type.equals(AccountType.STUDENTSAVING)) {
@@ -43,10 +59,23 @@ public class AccountController {
 		return account;		
 	}
 	
+	/**
+	 * Add account into account database.
+	 * @param account: A valid account information.
+	 * @return: True if the account successfully enrolled, or not, get False.
+	 * @throws FileNotFoundException: Thrown if connection to account database is not successful.
+	 */
 	public boolean addAccount(Account account) throws FileNotFoundException{
 		return this.accountdao.addAccount(account);		
 	}
 	
+	/**
+	 * Delete account only if the account balance is 0
+	 * @param accountId: A valid account ID
+	 * @return: True if account successfully deleted, or not, get False.
+	 * @throws IOException: Thrown if connection to account database is not successful.
+	 * @throws ParseException: Thrown if parsing process is not successful.
+	 */
 	public boolean deleteAccount(String accountId) throws IOException, ParseException{
 		Account account = this.accountdao.getAccountByAccountNumber(accountId);
 		if(account.getAccountBalance().compareTo(BigDecimal.ZERO) < 0) {
@@ -55,6 +84,13 @@ public class AccountController {
 		return this.accountdao.deleteAccount(accountId);	
 	}
 	
+	/**
+	 * Update account balance and write deposit log into transaction database.
+	 * @param account: An account wanted to be deposit
+	 * @param amountTo: An amount to want to deposit
+	 * @return: True if updating and writing is successful, or not, get False.
+	 * @throws IOException: Thrown if connection to account database is not successful.
+	 */
 	public boolean deposit(Account account, String amountTo) throws IOException{
 		Transaction tr = this.depositLog(account, amountTo);
 		accountdao.updateAccount(account);
@@ -62,6 +98,13 @@ public class AccountController {
 		return true;		
 	}
 	
+	/**
+	 * Deposit money into the account.
+	 * @param account: An account wanted to be deposit
+	 * @param amountTo: An amount to want to deposit
+	 * @return: A valid transaction log.
+	 * @throws FileNotFoundException: Thrown if connection to account database is not successful.
+	 */
 	public Transaction depositLog(Account account, String amountTo) throws FileNotFoundException{
 		BigDecimal amountToDeposit = new BigDecimal(amountTo);
 		BigDecimal newBalance = account.getAccountBalance().add(amountToDeposit);
@@ -72,6 +115,13 @@ public class AccountController {
 		return new Transaction(account.getAccountId(), LocalDate.now(), TransactionType.DEPOSIT, amountToDeposit, account.getAccountBalance());		
 	}
 	
+	/**
+	 * Update account balance and write withdraw log into transaction database.
+	 * @param account: An account wanted to be withdraw
+	 * @param amountTo: An amount to want to withdraw
+	 * @return: True if updating and writing is successful, or not, get False.
+	 * @throws IOException: Thrown if connection to account database is not successful.
+	 */
 	public boolean withdraw(Account account, String amountTo) throws IOException{
 		Transaction tr = this.withdrawLog(account, amountTo);
 		accountdao.updateAccount(account);
@@ -84,6 +134,13 @@ public class AccountController {
 		return true;		
 	}
 	
+	/**
+	 * Withdraw money from the account.
+	 * @param account: An account wanted to be withdraw
+	 * @param amountTo: An amount to want to withdraw
+	 * @return: A valid transaction log.
+	 * @throws FileNotFoundException: Thrown if connection to account database is not successful.
+	 */
 	public Transaction withdrawLog(Account account, String amountTo) throws FileNotFoundException {
 		BigDecimal amountToWithDraw = new BigDecimal(amountTo);
 		BigDecimal newBalance = account.getAccountBalance().subtract(amountToWithDraw);
@@ -97,11 +154,22 @@ public class AccountController {
 		}
 	}
 	
+	/**
+	 * Apply overdraft fee into specific account.
+	 * @param account: An account should be apply overdraft fee.
+	 * @return: A valid transaction log.
+	 * @throws FileNotFoundException: Thrown if connection to account database is not successful.
+	 */
 	public Transaction overDraftFeeService(Account account) throws FileNotFoundException{
 		account.setAccountBalance(account.getAccountBalance().subtract(overDraftFee));
 		return new Transaction(account.getAccountId(), LocalDate.now(), TransactionType.TR_FEE, overDraftFee, account.getAccountBalance());
 	}
 	
+	/**
+	 * Define overdraft fee limit depends on account type.
+	 * @param type: A valid account type.
+	 * @return: A designated overdraft limit.
+	 */
 	public BigDecimal defineOverDraftLimit(AccountType type) {
 		BigDecimal limit = BigDecimal.ZERO;
 		if(type.equals(AccountType.STUDENTCHECKING)) {
@@ -116,6 +184,11 @@ public class AccountController {
 		return limit;
 	}
 	
+	/**
+	 * Apply monthly fee into specific account.
+	 * @throws IOException: Thrown if connection to account database is not successful.
+	 * @throws ParseException: Thrown if parsing process is not successful.
+	 */
 	public void monthlyFeeService() throws IOException, ParseException{
 		List<Account> accountList = accountdao.getAccountAll();
 		for(Account ac : accountList) {
@@ -126,6 +199,13 @@ public class AccountController {
 		}
 	}
 	
+	/**
+	 * Define montly fee depends on account type.
+	 * @param account: A valid account object.
+	 * @return: A designated monthly fee.
+	 * @throws FileNotFoundException: Thrown if connection to account database is not successful.
+	 * @throws ParseException: Thrown if parsing process is not successful.
+	 */
 	public BigDecimal defineMonthlyFee(Account account) throws FileNotFoundException, ParseException{
 		BigDecimal monthlyFee = BigDecimal.ZERO;
 		if(account.getType().equals(AccountType.PERSONALCHECKING)) {

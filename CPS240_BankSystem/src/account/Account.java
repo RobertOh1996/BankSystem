@@ -6,6 +6,11 @@ import java.math.BigDecimal;
 import informationDAO.AccountDAO;
 import informationDAO.UserDAO;
 
+/**
+ * This class contains attributes and constructors for account information.
+ * @author Jaemin Oh
+ *
+ */
 public class Account {
 	
 	private String accountId;

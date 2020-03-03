@@ -8,8 +8,16 @@ import java.util.Locale;
 
 import informationDAO.TransactionDAO;
 
+/**
+ * This class contains attributes and constructors for transaction information.
+ * @author Jaemin Oh
+ *
+ */
 public class Transaction {
 	
+	/**
+	 * It defines valid date format for transaction information
+	 */
 	private static final DateTimeFormatter Date = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 	
 	private String accountId;
